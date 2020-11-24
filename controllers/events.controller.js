@@ -21,7 +21,15 @@ exports.readAll = (req, res) => {
     });
 };
 
-exports.readOne = (req, res) => {};
+exports.readOne = (req, res) => {
+  Event.find({ _id: req.params.id })
+    .then((response) => {
+      res.status(200).send(response);
+    })
+    .catch((err) => {
+      res.status(400).json(err);
+    });
+};
 
 exports.update = (req, res) => {};
 
