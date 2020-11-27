@@ -22,15 +22,47 @@ exports.readAll = (req, res) => {
 };
 
 exports.readOne = (req, res) => {
-  Event.find({ _id: req.params.id })
-    .then((response) => {
-      res.status(200).send(response);
-    })
-    .catch((err) => {
+  Event.findById(req.params.id, function (err, event) {
+    if (err) {
       res.status(400).json(err);
-    });
+      return;
+    }
+
+    res.status(200).json(event);
+  });
 };
 
-exports.update = (req, res) => {};
+exports.update = (req, res) => {
+  Event.findById(req.params.id, (err, event) => {
+    if (err) {
+      res.status(400).json(err);
+      return;
+    }
+
+    // Somehow Object.keys/entires and logginc event object shows different properties
+    // Using JSON Parse to get accurate depection of event object
+    const eventJSON = JSON.parse(JSON.stringify(event));
+    console.log(eventJSON);
+
+    console.log("Starting Iteration:");
+
+    const updatedEventObj = {};
+
+    for (let key of Object.keys(eventJSON)) {
+      console.log(`key: ${key}`);
+      if (key === "_id" || key === "__v") {
+        continue;
+      }
+
+      console.log(req.body[key]);
+
+      event[key] = req.body[key];
+    }
+
+    res.status(200).json(event);
+
+    event.save();
+  });
+};
 
 exports.del = (req, res) => {};
