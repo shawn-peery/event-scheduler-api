@@ -39,22 +39,14 @@ exports.update = (req, res) => {
       return;
     }
 
-    // Somehow Object.keys/entires and logginc event object shows different properties
+    // Somehow Object.keys/entires and logging event object shows completely different properties
     // Using JSON Parse to get accurate depection of event object
     const eventJSON = JSON.parse(JSON.stringify(event));
-    console.log(eventJSON);
-
-    console.log("Starting Iteration:");
-
-    const updatedEventObj = {};
 
     for (let key of Object.keys(eventJSON)) {
-      console.log(`key: ${key}`);
       if (key === "_id" || key === "__v") {
         continue;
       }
-
-      console.log(req.body[key]);
 
       event[key] = req.body[key];
     }
